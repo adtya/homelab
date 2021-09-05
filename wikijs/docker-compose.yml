@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  wikijs:
+    image: requarks/wiki:2
+    restart: unless-stopped
+    environment:
+      DB_TYPE: mariadb
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: wikiuser
+      DB_PASS_FILE: /run/secrets/db_password
+      DB_NAME: wikijs
+    ports:
+      - 127.0.0.1:3002:3000
+    secrets:
+      - db_password
+    depends_on:
+      - db
+    security_opt:
+      - no-new-privileges:true
+
+  db:
+    image: mariadb:10
+    restart: unless-stopped
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: '1'
+      MARIADB_DATABASE: wikijs
+      MARIADB_USER: wikiuser
+      MARIADB_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
+secrets:
+  db_password:
+    file: .db_password
