@@ -19,7 +19,7 @@ services:
       - db_password
 
   db:
-    image: mariadb
+    image: mariadb:10
     restart: always
     environment:
       MYSQL_DATABASE: wordpressdb
