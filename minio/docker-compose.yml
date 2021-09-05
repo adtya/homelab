@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  minio:
+    image: minio/minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ACCESS_KEY_FILE: /run/secrets/access_key
+      MINIO_SECRET_KEY_FILE: /run/secrets/secret_key
+      MINIO_SERVER_URL: <public url for accessing the API>
+      MINIO_BROWSER_REDIRECT_URL: <public url to access the minio console>
+    ports:
+      - 127.0.0.1:3001:9000
+      - 127.0.0.1:3002:9001
+    volumes:
+      - ./data:/data
+    secrets:
+      - access_key
+      - secret_key
+    security_opt:
+      - no-new-privileges:true
+
+secrets:
+  access_key:
+    file: .access_key
+  secret_key:
+    file: .secret_key
