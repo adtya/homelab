@@ -7,7 +7,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      APP_URL: https://wiki.adtya.xyz
+      FILE__APP_URL: /run/secrets/app_url
       DB_HOST: bookstack_db
       DB_USER: bookstack
       FILE__DB_PASS: /run/secrets/db_password
@@ -20,6 +20,7 @@ services:
       - bookstack_db
     secrets:
       - db_password
+      - app_url
 
   bookstack_db:
     image: ghcr.io/linuxserver/mariadb
@@ -44,6 +45,8 @@ secrets:
     file: .db_password
   db_root_password:
     file: .db_root_password
+  app_url:
+    file: .app_url
 
 volumes:
   app_data:
