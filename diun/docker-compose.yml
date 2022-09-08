@@ -4,20 +4,17 @@ services:
   diun:
     image: crazymax/diun:latest
     container_name: diun
+    hostname: diun_$HOSTNAME
     command: serve
     volumes:
-      - duin_data:/data
+      - data:/data
+      - ./diun.yml:/diun.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       TZ: Asia/Kolkata
       LOG_LEVEL: info
       LOG_JSON: false
-      DIUN_WATCH_WORKERS: 20
-      DIUN_WATCH_SCHEDULE: 0 */6 * * *
-      DIUN_PROVIDERS_DOCKER: true
-    labels:
-      - "diun.enable=true"
     restart: unless-stopped
 
 volumes:
-  duin_data:
+  data:

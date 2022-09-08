@@ -1,0 +1,13 @@
+watch:
+  workers: 5
+  schedule: "0 20 * * *"
+
+providers:
+  docker:
+    watchStopped: true
+    watchByDefault: true
+
+notif:
+  discord:
+    webhookURL: <webhook url for the a discord channel>
+
