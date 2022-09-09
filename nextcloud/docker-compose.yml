@@ -2,19 +2,38 @@ version: "3"
 
 services:
   nextcloud:
-    image: lscr.io/linuxserver/nextcloud:latest
+    image: nextcloud:23
     container_name: nextcloud
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
-    volumes:
-      - config:/config
-      - /mnt/data/cloud:/data
-    ports:
-      - 443:443
     restart: unless-stopped
+    environment:
+      MYSQL_HOST: nextcloud_db
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - /mnt/data/cloud:/var/www/html
+      - /mnt/data/cloud/data:/var/www/html/data
+    ports:
+      - 3000:80
+
+  nextcloud_db:
+    image: mariadb:10
+    container_name: nextcloud_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db_data:/var/lib/mysql
+    secrets:
+      - db_password
+
+secrets:
+  db_password:
+    file: .db_password
 
 volumes:
-  config:
+  db_data:
 
