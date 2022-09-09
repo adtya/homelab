@@ -2,33 +2,19 @@ version: "3"
 
 services:
   nextcloud:
-      image: nextcloud:stable
-      restart: unless-stopped
-      environment:
-        - POSTGRES_HOST: nextcloud_db
-        - POSTGRES_USER: nextcloud
-        - POSTGRES_DB: nextcloud_user
-        - POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-      secrets:
-        - db_password
-      volumes:
-        - /mnt/storage/cloud:/var/www/html
-
-  nextcloud_db:
-    image: postgres:13.4-alpine
-    restart: unless-stopped
+    image: lscr.io/linuxserver/nextcloud:latest
+    container_name: nextcloud
     environment:
-      POSTGRES_DB: nextcloud
-      POSTGRES_USER: nextcloud_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_password
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - config:/config
+      - /mnt/data/cloud:/data
+    ports:
+      - 443:443
+    restart: unless-stopped
 
 volumes:
-  db_data:
+  config:
 
-secrets:
-  db_password:
-    file: .db_password
