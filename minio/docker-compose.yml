@@ -8,8 +8,8 @@ services:
     environment:
       MINIO_ACCESS_KEY_FILE: /run/secrets/access_key
       MINIO_SECRET_KEY_FILE: /run/secrets/secret_key
-      MINIO_SERVER_URL: <public url for accessing the API>
-      MINIO_BROWSER_REDIRECT_URL: <public url to access the minio console>
+      MINIO_SERVER_URL: /run/secrets/server_url
+      MINIO_BROWSER_REDIRECT_URL: /run/secrets/redirect_url
     ports:
       - 127.0.0.1:3001:9000
       - 127.0.0.1:3002:9001
@@ -18,6 +18,8 @@ services:
     secrets:
       - access_key
       - secret_key
+      - server_url
+      - redirect_url
     security_opt:
       - no-new-privileges:true
 
@@ -26,3 +28,7 @@ secrets:
     file: .access_key
   secret_key:
     file: .secret_key
+  server_url:
+    file: .server_url
+  redirect_url:
+    file: .redirect_url
