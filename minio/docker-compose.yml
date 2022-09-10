@@ -2,33 +2,19 @@ version: "3"
 
 services:
   minio:
-    image: minio/minio
+    image: quay.io/minio/minio
+    container_name: minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
-    environment:
-      MINIO_ACCESS_KEY_FILE: /run/secrets/access_key
-      MINIO_SECRET_KEY_FILE: /run/secrets/secret_key
-      MINIO_SERVER_URL: /run/secrets/server_url
-      MINIO_BROWSER_REDIRECT_URL: /run/secrets/redirect_url
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    env_file: .env
     ports:
       - 127.0.0.1:3001:9000
       - 127.0.0.1:3002:9001
     volumes:
-      - ./data:/data
-    secrets:
-      - access_key
-      - secret_key
-      - server_url
-      - redirect_url
-    security_opt:
-      - no-new-privileges:true
+      - /mnt/data/minio_data:/data
 
-secrets:
-  access_key:
-    file: .access_key
-  secret_key:
-    file: .secret_key
-  server_url:
-    file: .server_url
-  redirect_url:
-    file: .redirect_url
